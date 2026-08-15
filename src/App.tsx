@@ -12,7 +12,7 @@ import { PAPER_SIZES, getPaper, pageDimensions } from './design/paper';
 import { THEMES } from './design/themes';
 import { MAX_SLOTS } from './templates/registry';
 import { parseActivityFiles } from './ingest';
-import { loadSampleFiles } from './samples';
+import { SAMPLE_HEADING, loadSampleFiles } from './samples';
 import {
   DEFAULT_FIELDS,
   activityMap,
@@ -102,6 +102,11 @@ export default function App() {
             setImporting(true);
             try {
               await importFiles(await loadSampleFiles(remaining));
+              setProject((p) =>
+                p.poster.header.title.trim() || p.poster.header.subtitle.trim()
+                  ? p
+                  : { ...p, poster: { ...p.poster, header: { show: true, ...SAMPLE_HEADING } } },
+              );
             } catch (err) {
               setStatus({
                 text: err instanceof Error ? err.message : String(err),
@@ -276,7 +281,11 @@ export default function App() {
             />
           </Panel>
 
-          <Panel title="Titles" defaultOpen={false}>
+          <Panel title="Heading &amp; footer">
+            <p className="note">
+              Optional. A heading sits above the maps; leave these empty for a poster that is
+              nothing but routes.
+            </p>
             <label className="checkbox">
               <input
                 type="checkbox"
