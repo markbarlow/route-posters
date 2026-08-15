@@ -30,7 +30,7 @@ emails you a zip containing every activity as GPX.
 
 ## What it does
 
-- **Ten layouts** — from a single hero route to a 3×3 "year in runs" wall grid, plus an auto
+- **Nine layouts** — from a single hero route to a 3×3 "year in runs" wall grid, plus an auto
   grid that arranges any number from one to ten to suit the page.
 - **Nine paper sizes** — A4 through A1, US 12×18 and 18×24, and square / 4:5 / 9:16 for social.
   Portrait or landscape, with optional 3mm print bleed.

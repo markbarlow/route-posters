@@ -53,9 +53,9 @@ describe('addActivities', () => {
 
   it('respects a deliberate template choice that still fits', () => {
     let project = withActivities(2);
-    project = { ...project, poster: { ...project.poster, templateId: 'side-by-side' } };
+    project = { ...project, poster: { ...project.poster, templateId: 'auto-grid' } };
     project = addActivities(project, []);
-    expect(project.poster.templateId).toBe('side-by-side');
+    expect(project.poster.templateId).toBe('auto-grid');
   });
 
   it('caps the poster at ten activities', () => {
@@ -156,6 +156,24 @@ describe('project files', () => {
     expect(restored.poster.themeId).toBeDefined();
     expect(restored.poster.header).toBeDefined();
     expect(restored.poster.footer.showPoweredByStrava).toBe(false);
+  });
+
+  it('repairs a project naming a template this build no longer has', () => {
+    // "side-by-side" was removed. Without repair, getTemplate falls back to "single", which
+    // yields one cell for two routes and draws them stacked on top of each other.
+    const project = withActivities(2);
+    const stale = projectToFile(project).replace('"templateId": "stacked-pair"', '"templateId": "side-by-side"');
+    expect(stale).toContain('side-by-side');
+
+    const restored = projectFromFile(stale);
+    expect(restored.poster.templateId).toBe('stacked-pair');
+    expect(restored.poster.slots).toHaveLength(2);
+  });
+
+  it('repairs a template that no longer suits the activity count', () => {
+    const project = withActivities(9);
+    const mismatched = projectToFile(project).replace('"templateId": "nine"', '"templateId": "quad"');
+    expect(projectFromFile(mismatched).poster.templateId).toBe('nine');
   });
 
   it('drops slots whose activity is missing from the file', () => {

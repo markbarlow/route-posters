@@ -1,4 +1,5 @@
 import type { Activity, Poster } from '../types';
+import { TEMPLATES, bestTemplateFor, getTemplate } from '../templates/registry';
 import { defaultPoster, emptyProject, pruneExpired, type Project } from './project';
 
 const STORAGE_KEY = 'route-posters:project:v1';
@@ -30,12 +31,32 @@ function reconcilePoster(stored: Partial<Poster> | undefined): Poster {
   };
 }
 
+/**
+ * Replaces a template the current build cannot honour. A stored project may name a layout that
+ * has since been removed, or one that no longer suits its activity count; either way the
+ * renderer would be handed fewer cells than it has routes and would silently draw them stacked
+ * on top of each other. Falling back to the best fit for the count keeps an old project
+ * openable and correct.
+ */
+function reconcileTemplate(poster: Poster): void {
+  const count = poster.slots.length;
+  if (count === 0) {
+    poster.templateId = 'single';
+    return;
+  }
+  const exists = TEMPLATES.some((t) => t.id === poster.templateId);
+  const template = getTemplate(poster.templateId);
+  const fits = count >= template.minSlots && count <= template.maxSlots;
+  if (!exists || !fits) poster.templateId = bestTemplateFor(count).id;
+}
+
 function reconcile(data: Partial<ProjectFile>): Project {
   const activities = Array.isArray(data.activities) ? data.activities : [];
   const poster = reconcilePoster(data.poster);
   // Never trust stored slots to still have activities behind them.
   const known = new Set(activities.map((a) => a.id));
   poster.slots = poster.slots.filter((s) => known.has(s.activityId));
+  reconcileTemplate(poster);
   return pruneExpired({ poster, activities });
 }
 
