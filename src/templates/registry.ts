@@ -40,15 +40,6 @@ export const TEMPLATES: Template[] = [
     cells: (box, count, gap) => take(rows(box, 2, gap), count),
   },
   {
-    id: 'side-by-side',
-    name: 'Side by side',
-    description: 'Two routes in adjacent columns.',
-    slots: 2,
-    minSlots: 2,
-    maxSlots: 2,
-    cells: (box, count, gap) => take(columns(box, 2, gap), count),
-  },
-  {
     id: 'triptych',
     name: 'Triptych',
     description: 'Three routes in a row — a classic gallery hang.',

@@ -121,10 +121,15 @@ describe('templates', () => {
 
   it('reports which templates accept a given count', () => {
     expect(templatesFor(9).map((t) => t.id)).toEqual(['nine', 'auto-grid']);
-    expect(templatesFor(2).map((t) => t.id)).toEqual(['stacked-pair', 'side-by-side', 'auto-grid']);
+    expect(templatesFor(2).map((t) => t.id)).toEqual(['stacked-pair', 'auto-grid']);
   });
 
   it('falls back to a real template for an unknown id', () => {
     expect(getTemplate('does-not-exist').id).toBe('single');
+  });
+
+  it('offers exactly nine templates, which tile the picker as three rows of three', () => {
+    expect(TEMPLATES).toHaveLength(9);
+    expect(new Set(TEMPLATES.map((t) => t.id)).size).toBe(9);
   });
 });
