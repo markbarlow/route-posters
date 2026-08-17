@@ -14,8 +14,9 @@ npm install
 npm run dev
 ```
 
-Then open the printed URL and press **Load samples** to see it working immediately — nine
-example activities ship with the app.
+Then open the printed URL and visit **Samples** to see it working immediately — nine example
+activities ship with the app, arranged half a dozen ways. Open any of them in the editor to pull
+it apart.
 
 To use your own data, export it from wherever it lives and drag the files in. In Strava that is
 **Settings → My Account → Download or Delete Your Account → Request your archive**, which
@@ -27,6 +28,42 @@ emails you a zip containing every activity as GPX.
 | `npm test` | Unit tests |
 | `npm run build` | Typecheck, then build to `dist/` |
 | `npm run preview` | Serve the built site, base path and all |
+| `npm run showcase` | Regenerate every image in `public/showcase/` |
+
+## Pages
+
+| Path | What it is |
+| --- | --- |
+| `/` | Splash — three posters and a single call to action |
+| `/create` | The editor: import, arrange, export |
+| `/samples` | Gallery of example posters, each openable in the editor |
+
+Routing is a ~60-line module in `src/router.tsx` rather than a dependency. GitHub Pages has no
+server-side rewrites, so a build plugin writes `dist/404.html` as a copy of `index.html`; Pages
+serves it for any unmatched path, the app boots, and the router reads the URL. That is what makes
+a direct hit on `/strava-posters/create` work on a cold load and on refresh.
+
+## Showcase images
+
+The splash and samples pages use pre-rendered PNGs from `public/showcase/`, listed in
+`src/showcase.ts`. Replacing one is replacing a file.
+
+> **The three splash images are placeholders.** They are generated from the bundled sample
+> activities. Swap in real posters by replacing `splash-1.png` (front), `splash-2.png` (left) and
+> `splash-3.png` (right) — portrait, and web-sized at roughly 900×1273 and under ~250KB each. A
+> 300 DPI print export is several megabytes and would make the homepage crawl.
+
+Pre-rendered images can go stale when a theme or layout changes, so regenerating them is one
+command:
+
+```bash
+npm run showcase
+```
+
+It drives the real app in headless Chromium and redraws every card from the current code, so the
+gallery can never show something the editor would not produce. It needs Playwright's browser
+(`npx playwright install chromium`) and is deliberately **not** part of CI — the deploy workflow
+never downloads a browser.
 
 ## What it does
 
@@ -84,10 +121,17 @@ src/
   geo/        Mercator projection, bounds fitting, Ramer-Douglas-Peucker simplification
   templates/  Layouts as pure (box, count) -> Rect[] functions
   poster/     layoutPoster(): poster + activities -> a complete render model
-  components/ The SVG poster, and the editor around it
+  pages/      One component per route
+  components/ The SVG poster, the editor around it, and the site chrome
   export/     Font embedding, PNG rasterisation, vector PDF
   store/      Project state, localStorage, project files
+  router.tsx  Route matching and base-path handling
+  showcase.ts Manifest of the splash and gallery images
 ```
+
+Pages hand work to each other through `localStorage` rather than shared React state: opening a
+sample writes a project with `saveProject()` and navigates, and the editor reads it on mount with
+`loadProject()` — the same mechanism that already lets a poster survive a reload.
 
 Two details worth knowing if you work on this:
 

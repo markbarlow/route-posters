@@ -79,6 +79,22 @@ export function loadProject(): Project {
   }
 }
 
+/**
+ * Whether there is saved work worth returning to. Deliberately cheap — it parses the stored JSON
+ * but looks only at the slot count, because the splash page calls this on every render to decide
+ * whether its button should say "Continue" or "Create".
+ */
+export function hasSavedProject(): boolean {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const data = JSON.parse(raw) as { poster?: { slots?: unknown[] } };
+    return Array.isArray(data.poster?.slots) && data.poster.slots.length > 0;
+  } catch {
+    return false;
+  }
+}
+
 export function clearProject(): void {
   try {
     localStorage.removeItem(STORAGE_KEY);

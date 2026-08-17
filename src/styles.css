@@ -59,7 +59,9 @@
 html,
 body,
 #root {
-  height: 100%;
+  /* min-height, not height: the editor pins itself to the viewport explicitly, while the splash
+     and samples pages must be free to grow and scroll. */
+  min-height: 100%;
   margin: 0;
 }
 
@@ -82,10 +84,13 @@ textarea {
 
 /* ---------- shell ---------- */
 
-.app {
+/* The editor pins itself to the viewport so its two panes scroll independently; the marketing
+   pages sit in normal document flow and scroll as a page. Keeping the shells separate stops one
+   fighting the other. */
+.editor-shell {
   display: grid;
   grid-template-rows: auto 1fr;
-  height: 100%;
+  height: 100dvh;
 }
 
 .topbar {
@@ -95,6 +100,7 @@ textarea {
   padding: var(--space-3) var(--space-5);
   border-bottom: 1px solid var(--border);
   background: var(--surface);
+  flex: none;
 }
 
 .topbar__brand {
@@ -102,6 +108,47 @@ textarea {
   font-size: 24px;
   letter-spacing: 0.04em;
   margin: 0;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.topbar__nav {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* The tagline is the first thing to go when space is tight — the brand and the nav are what
+   people need. */
+@media (max-width: 620px) {
+  .topbar {
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .topbar__tag {
+    display: none;
+  }
+
+  .topbar__brand {
+    white-space: nowrap;
+  }
+}
+
+.topbar__link {
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.topbar__link:hover {
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+.topbar__link--current {
+  background: var(--surface-raised);
+  color: var(--text);
 }
 
 .topbar__tag {
@@ -555,7 +602,254 @@ textarea:focus {
   color: var(--danger);
 }
 
+/* ---------- site pages (splash, samples) ---------- */
+
+.site {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-5) 72px;
+}
+
+.site__head {
+  max-width: 620px;
+  margin-bottom: var(--space-6);
+}
+
+.site__title {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 6vw, 52px);
+  letter-spacing: 0.02em;
+  margin: 0 0 var(--space-2);
+}
+
+.site__lede {
+  color: var(--text-muted);
+  margin: 0;
+  font-size: 15px;
+}
+
+/* ---------- splash ---------- */
+
+.splash {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  /* A rotated card must never be able to give the page a horizontal scrollbar. */
+  overflow-x: clip;
+}
+
+.splash__pitch {
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.splash__headline {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 7vw, 64px);
+  line-height: 1.02;
+  letter-spacing: 0.015em;
+  margin: 0;
+}
+
+.splash__sub {
+  color: var(--text-muted);
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.btn--large {
+  padding: 13px 30px;
+  font-size: 16px;
+  text-decoration: none;
+  margin-top: var(--space-2);
+}
+
+.splash__aside {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.splash__aside a,
+.stage__empty a {
+  color: var(--text);
+}
+
+.splash__privacy {
+  margin: var(--space-2) 0 0;
+  max-width: 420px;
+}
+
+/* ---------- the poster fan ---------- */
+
+.fan {
+  /* Sized in one place: every card and offset below is a multiple of this width, so the whole
+     composition scales by changing this single value. */
+  --card-w: min(330px, 62vw);
+  --spread-x: 46%;
+  --spread-y: 4%;
+  --tilt: 8deg;
+  /* The two behind sit back a little as well as out, so the front card reads as the subject
+     rather than as one of three equals. */
+  --behind-scale: 0.93;
+
+  position: relative;
+  width: min(calc(var(--card-w) * 1.95), 100%);
+  /* Tall enough for a rotated card plus its offset, so nothing overlaps the headline below. */
+  height: calc(var(--card-w) * 1.62);
+  margin-bottom: var(--space-5);
+}
+
+.fan__card {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--card-w);
+  aspect-ratio: 1 / 1.414;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--surface-raised);
+  /* Pivot from the bottom so the two behind swing out like cards held in a hand, rather than
+     sliding sideways. */
+  transform-origin: bottom center;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.fan__card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fan__card--primary {
+  z-index: 3;
+  transform: translateX(-50%);
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.fan__card--left {
+  z-index: 1;
+  transform: translateX(calc(-50% - var(--spread-x))) translateY(var(--spread-y))
+    rotate(calc(var(--tilt) * -1)) scale(var(--behind-scale));
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+}
+
+.fan__card--right {
+  z-index: 2;
+  transform: translateX(calc(-50% + var(--spread-x))) translateY(var(--spread-y))
+    rotate(var(--tilt)) scale(var(--behind-scale));
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+}
+
+@media (hover: hover) {
+  .fan:hover {
+    --spread-x: 56%;
+    --tilt: 11deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fan__card {
+    transition: none;
+  }
+  .fan:hover {
+    --spread-x: 46%;
+    --tilt: 8deg;
+  }
+}
+
+/* Tighten the fan on small screens so the outer cards stay visible as slivers rather than
+   running off the edge of the page. */
+@media (max-width: 620px) {
+  .fan {
+    --card-w: min(270px, 54vw);
+    --spread-x: 36%;
+    --tilt: 7deg;
+  }
+}
+
+@media (max-width: 420px) {
+  .fan {
+    --card-w: min(230px, 52vw);
+    --spread-x: 30%;
+    --tilt: 6deg;
+  }
+}
+
+/* ---------- samples gallery ---------- */
+
+.gallery {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-5);
+}
+
+.gallery__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.gallery__frame {
+  aspect-ratio: 1 / 1.414;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--surface-raised);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4);
+}
+
+.gallery__frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gallery__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.gallery__title {
+  font-size: 15px;
+  margin: 0;
+}
+
+.gallery__desc {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-faint);
+  flex: 1;
+}
+
 /* ---------- misc ---------- */
+
+.rule {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: var(--space-2) 0;
+}
+
+.btn--danger {
+  border-color: var(--border-strong);
+  color: var(--danger);
+}
+
+.btn--danger:hover:not(:disabled) {
+  background: rgba(255, 107, 107, 0.12);
+  border-color: var(--danger);
+}
+
 
 .note {
   font-size: 12px;
