@@ -1,3 +1,7 @@
+import { parseActivityFiles } from './ingest';
+import { addActivities, emptyProject, type Project } from './store/project';
+import type { Preset } from './showcase';
+
 /**
  * Bundled example activities, so the app has something to show before anyone has exported
  * anything from Strava. Nine of them, which fills the 3x3 grid.
@@ -23,6 +27,30 @@ export const SAMPLE_HEADING = {
   title: '2026 in motion',
   subtitle: 'Nine days worth remembering',
 };
+
+/**
+ * Builds a complete project from the bundled samples with a preset applied.
+ *
+ * Both the samples gallery and the showcase image generator go through here, and both reuse the
+ * ordinary import path — the samples are parsed exactly as a dropped file would be, so a gallery
+ * card can never show something the editor would not produce.
+ */
+export async function buildSampleProject(preset: Preset): Promise<Project> {
+  const files = await loadSampleFiles(preset.activityCount);
+  const { activities } = await parseActivityFiles(files);
+  const project = addActivities(emptyProject(), activities);
+
+  return {
+    ...project,
+    poster: {
+      ...project.poster,
+      templateId: preset.templateId,
+      themeId: preset.themeId,
+      paperId: preset.paperId,
+      header: { show: true, ...(preset.heading ?? SAMPLE_HEADING) },
+    },
+  };
+}
 
 /** Fetches the bundled samples as File objects so they go through the normal import path. */
 export async function loadSampleFiles(count: number = SAMPLE_FILES.length): Promise<File[]> {

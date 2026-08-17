@@ -187,6 +187,42 @@ describe('project files', () => {
   });
 });
 
+describe('hasSavedProject', () => {
+  const store = new Map<string, string>();
+
+  beforeEach(() => {
+    store.clear();
+    vi.stubGlobal('localStorage', {
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => void store.set(k, v),
+      removeItem: (k: string) => void store.delete(k),
+    });
+  });
+
+  it('is false with nothing stored', async () => {
+    const { hasSavedProject } = await import('./persistence');
+    expect(hasSavedProject()).toBe(false);
+  });
+
+  it('is false for a project with no activities on it', async () => {
+    const { hasSavedProject, saveProject } = await import('./persistence');
+    saveProject(emptyProject());
+    expect(hasSavedProject()).toBe(false);
+  });
+
+  it('is true once a poster has activities', async () => {
+    const { hasSavedProject, saveProject } = await import('./persistence');
+    saveProject(withActivities(2));
+    expect(hasSavedProject()).toBe(true);
+  });
+
+  it('is false rather than throwing on corrupt storage', async () => {
+    const { hasSavedProject } = await import('./persistence');
+    store.set('route-posters:project:v1', '{not json');
+    expect(hasSavedProject()).toBe(false);
+  });
+});
+
 describe('localStorage persistence', () => {
   beforeEach(() => {
     vi.resetModules();

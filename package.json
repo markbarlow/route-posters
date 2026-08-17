@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "showcase": "node scripts/render-showcase.mjs"
   },
   "dependencies": {
     "@mapbox/polyline": "^1.2.1",
@@ -25,6 +26,7 @@
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.0.5",
     "jsdom": "^30.0.1",
+    "playwright": "^1.62.1",
     "typescript": "^7.0.2",
     "vite": "^8.2.1",
     "vitest": "^4.1.10"
