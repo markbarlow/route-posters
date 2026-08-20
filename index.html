@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <!-- %BASE_URL% is substituted with Vite's configured base at build time. An href
+         relative to the document would resolve against the current route, so on a URL with
+         a trailing slash such as /samples/ the browser would look a directory too deep. -->
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <title>Route Posters</title>
     <meta
       name="description"
