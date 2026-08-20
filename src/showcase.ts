@@ -9,8 +9,12 @@ export interface Preset {
   templateId: string;
   themeId: string;
   paperId: string;
-  /** How many of the bundled sample activities the layout needs. */
-  activityCount: number;
+  /**
+   * Which sample activities to place, by id, in the order they should appear. Naming them rather
+   * than counting them matters once the pool is mixed: "the first two" would drop a marathon into
+   * a poster about alpine climbs.
+   */
+  activities: string[];
   /** Overrides the default sample heading, so a row of examples doesn't repeat one title. */
   heading?: { title: string; subtitle: string };
 }
@@ -51,8 +55,8 @@ export const SPLASH_POSTERS: ShowcaseItem[] = [
       templateId: 'nine',
       themeId: 'midnight',
       paperId: 'a3',
-      activityCount: 9,
-      heading: { title: '2026 in motion', subtitle: 'Nine days worth remembering' },
+      activities: ['boston', 'london', 'berlin', 'barcelona', 'manchester', 'edinburgh', 'york', 'newport', 'dorney'],
+      heading: { title: 'Going the distance', subtitle: 'Nine marathons, one wall' },
     },
   },
   {
@@ -61,11 +65,11 @@ export const SPLASH_POSTERS: ShowcaseItem[] = [
     title: 'Classic climbs',
     description: "Two Alpine climbs, Alpe d'Huez and Ventoux, traced in red on white.",
     preset: {
-      templateId: 'single',
-      themeId: 'paper',
+      templateId: 'stacked-pair',
+      themeId: 'noir',
       paperId: 'a3',
-      activityCount: 1,
-      heading: { title: 'Richmond Park', subtitle: 'The usual Sunday loop' },
+      activities: ['ventoux', 'alpe'],
+      heading: { title: 'Classic climbs', subtitle: 'The great ascents' },
     },
   },
   {
@@ -77,54 +81,100 @@ export const SPLASH_POSTERS: ShowcaseItem[] = [
       templateId: 'six',
       themeId: 'blueprint',
       paperId: 'a3',
-      activityCount: 6,
-      heading: { title: 'Spring in the saddle', subtitle: 'Six mornings out' },
+      activities: ['london', 'berlin', 'barcelona', 'manchester', 'edinburgh', 'york'],
+      heading: { title: 'Cities in motion', subtitle: 'Six marathon mornings' },
     },
   },
 ];
 
-/** The samples gallery: one card per preset, covering the range of layouts and palettes. */
+/**
+ * The samples gallery: one card per preset, chosen so each layout is shown doing what it is good
+ * at rather than being handed an arbitrary number of routes.
+ *
+ * Headings are subject-led and carry no dates — these sit on the site indefinitely, and a caption
+ * naming a year starts looking stale the moment it turns.
+ */
 export const SAMPLE_GALLERY: ShowcaseItem[] = [
   {
     id: 'single-paper',
     image: 'sample-single-paper.png',
     title: 'Single · Paper',
-    description: 'One route given the whole page, in ink on warm off-white.',
-    preset: { templateId: 'single', themeId: 'paper', paperId: 'a3', activityCount: 1 },
+    description:
+      "Alpe d'Huez given the whole page, its twenty-one hairpins in dark ink on warm off-white.",
+    preset: {
+      templateId: 'single',
+      themeId: 'paper',
+      paperId: 'a3',
+      activities: ['alpe'],
+      heading: { title: "Alpe d'Huez", subtitle: 'Twenty-one hairpins' },
+    },
+  },
+  {
+    id: 'pair-noir',
+    image: 'sample-pair-noir.png',
+    title: 'Stacked pair · Noir',
+    description: 'Mont Ventoux above Alpe d\'Huez, both climbs traced in red on white.',
+    preset: {
+      templateId: 'stacked-pair',
+      themeId: 'noir',
+      paperId: 'a3',
+      activities: ['ventoux', 'alpe'],
+      heading: { title: 'Classic climbs', subtitle: 'The great ascents' },
+    },
   },
   {
     id: 'triptych-sage',
     image: 'sample-triptych-sage.png',
     title: 'Triptych · Sage',
-    description: 'Three routes side by side in deep green on a pale wash.',
-    preset: { templateId: 'triptych', themeId: 'sage', paperId: 'a3', activityCount: 3 },
+    description:
+      'London, Berlin and Barcelona marathons stacked down the page in deep green on a pale wash.',
+    preset: {
+      templateId: 'triptych',
+      themeId: 'sage',
+      paperId: 'a3',
+      activities: ['london', 'berlin', 'barcelona'],
+      heading: { title: 'Three cities', subtitle: 'London · Berlin · Barcelona' },
+    },
   },
   {
-    id: 'quad-blueprint',
-    image: 'sample-quad-blueprint.png',
-    title: 'Quad · Blueprint',
-    description: 'Four routes in a two-by-two block, pale blue on deep blue.',
-    preset: { templateId: 'quad', themeId: 'blueprint', paperId: 'a3', activityCount: 4 },
-  },
-  {
-    id: 'feature-noir',
-    image: 'sample-feature-noir.png',
-    title: 'Feature + three · Noir',
-    description: 'One hero route above three smaller ones, in red on white.',
-    preset: { templateId: 'feature-three', themeId: 'noir', paperId: 'a3', activityCount: 4 },
+    id: 'feature-blueprint',
+    image: 'sample-feature-blueprint.png',
+    title: 'Feature + three · Blueprint',
+    description:
+      'The London marathon large above Boston, York and Edinburgh, pale blue on deep blue.',
+    preset: {
+      templateId: 'feature-three',
+      themeId: 'blueprint',
+      paperId: 'a3',
+      activities: ['london', 'boston', 'york', 'edinburgh'],
+      heading: { title: 'Home roads', subtitle: 'Four British marathons' },
+    },
   },
   {
     id: 'six-heat',
     image: 'sample-six-heat.png',
     title: 'Six · Heat',
-    description: 'Six routes in orange on charcoal.',
-    preset: { templateId: 'six', themeId: 'heat', paperId: 'a3', activityCount: 6 },
+    description: 'Six marathon routes in orange on charcoal.',
+    preset: {
+      templateId: 'six',
+      themeId: 'heat',
+      paperId: 'a3',
+      activities: ['london', 'berlin', 'barcelona', 'manchester', 'newport', 'dorney'],
+      heading: { title: 'Six starts', subtitle: 'One finish line after another' },
+    },
   },
   {
     id: 'nine-midnight',
     image: 'sample-nine-midnight.png',
     title: 'Nine · Midnight',
-    description: 'Nine routes in a three-by-three grid, white on near-black.',
-    preset: { templateId: 'nine', themeId: 'midnight', paperId: 'a3', activityCount: 9 },
+    description:
+      'Nine marathon routes in a three-by-three grid, white on near-black — the year-in-runs wall piece.',
+    preset: {
+      templateId: 'nine',
+      themeId: 'midnight',
+      paperId: 'a3',
+      activities: ['boston', 'london', 'berlin', 'barcelona', 'manchester', 'edinburgh', 'york', 'newport', 'dorney'],
+      heading: { title: 'Going the distance', subtitle: 'Nine marathons, one wall' },
+    },
   },
 ];

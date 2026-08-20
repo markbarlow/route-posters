@@ -2,6 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Activity } from '../types';
 import {
   addActivities,
+  defaultFieldsFor,
+  unavailableFields,
   emptyProject,
   moveSlot,
   pruneExpired,
@@ -184,6 +186,55 @@ describe('project files', () => {
       activities: [],
     });
     expect(projectFromFile(orphaned).poster.slots).toEqual([]);
+  });
+});
+
+describe('defaultFieldsFor', () => {
+  it('offers the full set when the activity has everything', () => {
+    expect(defaultFieldsFor(activity('a'))).toEqual(['distance', 'time', 'pace', 'date']);
+  });
+
+  it('drops time and pace for a planned route, and promotes elevation instead', () => {
+    // Without this a route export prints "TIME 0:00" — not a blank, but a claim that a 20km
+    // alpine climb took no time at all.
+    const route = activity('route', { movingTimeS: 0, elapsedTimeS: 0, startDateLocal: null });
+    // Elevation is promoted to fill the gap — on a climb it is the number that matters.
+    expect(defaultFieldsFor(route)).toEqual(['distance', 'elevation']);
+  });
+
+  it('drops only the date when timestamps are missing but time is known', () => {
+    expect(defaultFieldsFor(activity('a', { startDateLocal: null }))).toEqual([
+      'distance',
+      'time',
+      'pace',
+      'elevation',
+    ]);
+  });
+});
+
+describe('unavailableFields', () => {
+  it('names every gap, including ones not in the defaults', () => {
+    const bare = activity('bare', {
+      movingTimeS: 0,
+      startDateLocal: null,
+      elevationGainM: null,
+      locationName: undefined,
+    });
+    expect(unavailableFields(bare).sort()).toEqual(
+      ['date', 'elevation', 'location', 'pace', 'time'].sort(),
+    );
+  });
+
+  it('reports nothing missing for a complete activity', () => {
+    expect(unavailableFields(activity('a', { locationName: 'London' }))).toEqual([]);
+  });
+});
+
+describe('slots follow the data', () => {
+  it('gives a timeless activity a slot without time or pace', () => {
+    const route = activity('route', { movingTimeS: 0, startDateLocal: null });
+    const project = addActivities(emptyProject(), [route]);
+    expect(project.poster.slots[0].fields).toEqual(['distance', 'elevation']);
   });
 });
 
