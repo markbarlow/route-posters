@@ -29,8 +29,46 @@ export function emptyProject(): Project {
   return { poster: defaultPoster(), activities: [] };
 }
 
-export function makeSlot(activityId: string): Slot {
-  return { activityId, fields: [...DEFAULT_FIELDS] };
+/**
+ * Fields with no data behind them for this activity.
+ *
+ * A planned-route GPX carries no timestamps, so its moving time parses as zero — and a zero
+ * duration formats as "0:00", which on a poster is not a blank but a claim that the ride took no
+ * time at all. Naming the gaps in one place lets the defaults skip them and the toggles grey them
+ * out from the same source of truth.
+ */
+export function unavailableFields(activity: Activity): Field[] {
+  const missing: Field[] = [];
+  if (!(activity.movingTimeS > 0)) missing.push('time', 'pace');
+  if (!activity.startDateLocal) missing.push('date');
+  if (activity.elevationGainM === null) missing.push('elevation');
+  if (!activity.locationName) missing.push('location');
+  return missing;
+}
+
+/**
+ * Fields tried in order when picking defaults, richest first. Elevation sits last because on a
+ * road run it is the least interesting number — but it moves up the moment the ones above it have
+ * no data, which is what makes a planned climb show its 1,500m of ascent rather than distance
+ * alone.
+ */
+const FIELD_PRIORITY: Field[] = ['distance', 'time', 'pace', 'date', 'elevation'];
+
+/** How many stats a caption carries before it starts crowding the map above it. */
+const DEFAULT_FIELD_COUNT = 4;
+
+/**
+ * The starting field selection for a newly added activity: the best few fields it can actually
+ * fill. A recorded run takes distance, time, pace and date; a route export with no timestamps
+ * falls through to distance and elevation instead of printing three empty rows.
+ */
+export function defaultFieldsFor(activity: Activity): Field[] {
+  const missing = new Set(unavailableFields(activity));
+  return FIELD_PRIORITY.filter((field) => !missing.has(field)).slice(0, DEFAULT_FIELD_COUNT);
+}
+
+export function makeSlot(activity: Activity): Slot {
+  return { activityId: activity.id, fields: defaultFieldsFor(activity) };
 }
 
 export function activityMap(activities: Activity[]): Map<string, Activity> {
@@ -49,7 +87,7 @@ export function addActivities(project: Project, incoming: Activity[]): Project {
   if (accepted.length === 0) return project;
 
   const activities = [...project.activities, ...accepted];
-  const slots = [...project.poster.slots, ...accepted.map((a) => makeSlot(a.id))];
+  const slots = [...project.poster.slots, ...accepted.map(makeSlot)];
   const current = getTemplate(project.poster.templateId);
   const stillFits = slots.length >= current.minSlots && slots.length <= current.maxSlots;
 

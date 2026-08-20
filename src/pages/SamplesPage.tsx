@@ -30,8 +30,9 @@ export default function SamplesPage() {
       <header className="site__head">
         <h1 className="site__title">Samples</h1>
         <p className="site__lede">
-          Nine example activities, arranged a few different ways. Open any of them in the editor to
-          pull it apart, change the layout, or swap in your own files.
+          Real routes — ten marathons and two of cycling's great Alpine climbs — arranged a few
+          different ways. Open any of them in the editor to pull it apart, change the layout, or
+          swap in your own files.
         </p>
       </header>
 

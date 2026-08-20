@@ -30,7 +30,7 @@ function circleActivity(id: string, radiusKm: number, lat = 51.5, over: Partial<
 }
 
 function posterWith(activities: Activity[], over: Partial<Poster> = {}): Poster {
-  return { ...defaultPoster(), slots: activities.map((a) => makeSlot(a.id)), ...over };
+  return { ...defaultPoster(), slots: activities.map(makeSlot), ...over };
 }
 
 /** Width of the drawn route in millimetres, read back off the generated path data. */
@@ -170,7 +170,7 @@ describe('layoutPoster', () => {
   it('ignores slots whose activity has gone missing', () => {
     const a = circleActivity('a', 5);
     const poster = posterWith([a]);
-    poster.slots.push(makeSlot('vanished'));
+    poster.slots.push({ activityId: 'vanished', fields: [] });
     const model = layoutPoster(poster, activityMap([a]));
     expect(model.cells).toHaveLength(1);
   });

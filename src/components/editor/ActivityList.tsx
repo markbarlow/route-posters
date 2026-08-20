@@ -3,6 +3,7 @@ import type { Activity, Field, Poster, Units } from '../../types';
 import { formatDate } from '../../format/date';
 import { formatDistance, formatSportType } from '../../format/units';
 import { FieldToggles } from './FieldToggles';
+import { unavailableFields } from '../../store/project';
 
 export function ActivityList({
   poster,
@@ -94,11 +95,7 @@ export function ActivityList({
                 <FieldToggles
                   value={slot.fields}
                   onChange={(fields) => onFieldsChange(slot.activityId, fields)}
-                  disabledFields={[
-                    ...(activity.elevationGainM === null ? (['elevation'] as Field[]) : []),
-                    ...(activity.locationName ? [] : (['location'] as Field[])),
-                    ...(activity.startDateLocal ? [] : (['date'] as Field[])),
-                  ]}
+                  disabledFields={unavailableFields(activity)}
                 />
               </div>
             ) : null}

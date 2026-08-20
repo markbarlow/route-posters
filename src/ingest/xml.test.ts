@@ -4,11 +4,13 @@ import { readFileSync } from 'node:fs';
 import { parseXmlActivity } from './xml';
 import { cleanSamples, deriveStats, type Sample } from './track';
 
-const sample = (name: string) => readFileSync(`public/samples/${name}`, 'utf8');
+// A synthetic track, kept as a fixture so parser tests do not depend on the bundled sample
+// activities — those are marketing assets and change whenever the gallery is restyled.
+const sample = (name: string) => readFileSync(`src/ingest/__fixtures__/${name}`, 'utf8');
 
 describe('parseXmlActivity - GPX', () => {
   it('reads a generated sample end to end', () => {
-    const activity = parseXmlActivity(sample('richmond-park-loop.gpx'), 'richmond-park-loop.gpx');
+    const activity = parseXmlActivity(sample('synthetic-loop.gpx'), 'synthetic-loop.gpx');
 
     expect(activity.name).toBe('Richmond Park loop');
     expect(activity.sportType).toBe('Run');

@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "showcase": "node scripts/render-showcase.mjs"
+    "showcase": "node scripts/render-showcase.mjs",
+    "samples:prep": "node scripts/prep-samples.mjs"
   },
   "dependencies": {
     "@mapbox/polyline": "^1.2.1",
