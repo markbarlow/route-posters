@@ -2,7 +2,7 @@
  * Manifest for the images shown on the splash and samples pages.
  *
  * Images live in `public/showcase/`, so replacing one is replacing a file — nothing here needs
- * editing unless the set itself changes. Regenerate them all with `npm run showcase`.
+ * editing unless the set itself changes. Regenerate the gallery with `npm run showcase`.
  */
 
 export interface Preset {
@@ -32,16 +32,21 @@ export const showcaseImageUrl = image;
 /**
  * The three posters fanned on the splash page, most prominent first.
  *
- * PLACEHOLDERS: these are generated from the bundled sample activities. Swap in real posters by
- * replacing the three files in public/showcase/ — keep them portrait and web-sized (~900px tall,
- * under ~250KB), not 300 DPI print exports, or the homepage will crawl.
+ * These are real posters. Replacing one is replacing a file in public/showcase/ — keep it portrait
+ * (the fan frames them at A3 aspect and crops anything else) and web-sized at roughly 900x1273,
+ * not a 300 DPI print export, or the homepage will crawl.
+ *
+ * `description` is the image's alt text, so it must be updated alongside the artwork. The presets
+ * are only consulted by `npm run showcase -- --splash`, which redraws placeholders from scratch.
  */
 export const SPLASH_POSTERS: ShowcaseItem[] = [
   {
     id: 'splash-primary',
     image: 'splash-1.png',
-    title: 'A year of running, nine routes to a page',
-    description: 'Nine running routes in a three-by-three grid on a near-black background.',
+    title: 'Going the distance',
+    description:
+      'Nine marathon routes — London, Barcelona, Berlin and more — in a three-by-three grid, '
+      + 'white on near-black.',
     preset: {
       templateId: 'nine',
       themeId: 'midnight',
@@ -53,8 +58,8 @@ export const SPLASH_POSTERS: ShowcaseItem[] = [
   {
     id: 'splash-left',
     image: 'splash-2.png',
-    title: 'A single route, given the whole page',
-    description: 'One loop printed large in dark ink on warm off-white paper.',
+    title: 'Classic climbs',
+    description: "Two Alpine climbs, Alpe d'Huez and Ventoux, traced in red on white.",
     preset: {
       templateId: 'single',
       themeId: 'paper',
@@ -66,8 +71,8 @@ export const SPLASH_POSTERS: ShowcaseItem[] = [
   {
     id: 'splash-right',
     image: 'splash-3.png',
-    title: 'Six rides in a grid',
-    description: 'Six cycling routes in pale blue on a deep blue background.',
+    title: 'Cities in motion',
+    description: 'Marathon routes in pale blue on a deep blue background.',
     preset: {
       templateId: 'six',
       themeId: 'blueprint',

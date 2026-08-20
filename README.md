@@ -28,7 +28,7 @@ emails you a zip containing every activity as GPX.
 | `npm test` | Unit tests |
 | `npm run build` | Typecheck, then build to `dist/` |
 | `npm run preview` | Serve the built site, base path and all |
-| `npm run showcase` | Regenerate every image in `public/showcase/` |
+| `npm run showcase` | Regenerate the samples gallery images |
 
 ## Pages
 
@@ -41,29 +41,31 @@ emails you a zip containing every activity as GPX.
 Routing is a ~60-line module in `src/router.tsx` rather than a dependency. GitHub Pages has no
 server-side rewrites, so a build plugin writes `dist/404.html` as a copy of `index.html`; Pages
 serves it for any unmatched path, the app boots, and the router reads the URL. That is what makes
-a direct hit on `/strava-posters/create` work on a cold load and on refresh.
+a direct hit on `/route-posters/create` work on a cold load and on refresh.
 
 ## Showcase images
 
 The splash and samples pages use pre-rendered PNGs from `public/showcase/`, listed in
 `src/showcase.ts`. Replacing one is replacing a file.
 
-> **The three splash images are placeholders.** They are generated from the bundled sample
-> activities. Swap in real posters by replacing `splash-1.png` (front), `splash-2.png` (left) and
-> `splash-3.png` (right) — portrait, and web-sized at roughly 900×1273 and under ~250KB each. A
-> 300 DPI print export is several megabytes and would make the homepage crawl.
+The **splash** images (`splash-1.png` front, `splash-2.png` left, `splash-3.png` right) are real
+posters. Keep replacements portrait — the fan frames them at A3 aspect and crops anything else —
+and web-sized at roughly 900×1273 and a few hundred KB. A 300 DPI print export is several megabytes
+and would make the homepage crawl.
 
-Pre-rendered images can go stale when a theme or layout changes, so regenerating them is one
+The **gallery** images can go stale when a theme or layout changes, so regenerating them is one
 command:
 
 ```bash
-npm run showcase
+npm run showcase              # gallery only — leaves the splash artwork alone
+npm run showcase -- --splash  # also redraws the splash images from sample data
 ```
 
-It drives the real app in headless Chromium and redraws every card from the current code, so the
-gallery can never show something the editor would not produce. It needs Playwright's browser
-(`npx playwright install chromium`) and is deliberately **not** part of CI — the deploy workflow
-never downloads a browser.
+It drives the real app in headless Chromium, so the gallery can never show something the editor
+would not produce. **The default deliberately skips the splash images**, because the command that
+keeps the gallery fresh must not quietly overwrite supplied artwork. It needs Playwright's browser
+(`npx playwright install chromium`) and is not part of CI — the deploy workflow never downloads a
+browser.
 
 ## What it does
 
@@ -148,7 +150,7 @@ Two details worth knowing if you work on this:
 Pushing to `main` builds and publishes to GitHub Pages via `.github/workflows/deploy.yml`.
 Enable it once under **Settings → Pages → Source → GitHub Actions**.
 
-The site is served from a sub-path, so `vite.config.ts` sets `base: '/strava-posters/'`. If you
+The site is served from a sub-path, so `vite.config.ts` sets `base: '/route-posters/'`. If you
 fork this under a different repository name, change that — or set `VITE_BASE` to override it,
 which is what you want for a custom domain (`VITE_BASE=/ npm run build`).
 

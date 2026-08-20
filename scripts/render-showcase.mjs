@@ -17,12 +17,15 @@ import { chromium } from 'playwright';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT_DIR = resolve(ROOT, 'public/showcase');
 const PORT = 5199;
-const BASE = `http://localhost:${PORT}/strava-posters/`;
+const BASE = `http://localhost:${PORT}/route-posters/`;
 
 /** Output size: portrait, web-sized. Print-resolution exports would make the homepage crawl. */
 const WIDTH = 900;
 const HEIGHT = 1273;
 const MAX_BYTES = 260_000;
+
+/** Splash images are user-supplied artwork; only redraw them when asked. */
+const withSplash = process.argv.includes('--splash');
 
 async function waitForServer(url, timeoutMs = 60_000) {
   const deadline = Date.now() + timeoutMs;
@@ -66,10 +69,26 @@ try {
   });
 
   // The app hands over its own manifest, so filenames and presets can never drift apart.
-  const items = await page.evaluate(() =>
-    window.__routePosters.showcase.map((i) => ({ image: i.image, preset: i.preset })),
-  );
+  const manifest = await page.evaluate(() => {
+    const pick = (list) => list.map((i) => ({ image: i.image, preset: i.preset }));
+    return {
+      splash: pick(window.__routePosters.showcase.splash),
+      gallery: pick(window.__routePosters.showcase.gallery),
+    };
+  });
+
+  /*
+   * The splash images are the ones a user supplies, so they are left alone unless explicitly
+   * asked for. Regenerating them by default would mean the command that keeps the gallery fresh
+   * also quietly destroys the artwork on the homepage.
+   */
+  const items = withSplash ? [...manifest.splash, ...manifest.gallery] : manifest.gallery;
   if (items.length === 0) throw new Error('The app exposed no showcase entries.');
+  console.log(
+    withSplash
+      ? 'Rendering gallery and splash images.'
+      : `Rendering gallery images. Leaving ${manifest.splash.length} splash images untouched (--splash to include them).`,
+  );
 
   for (const { image, preset } of items) {
     await page.evaluate(async (p) => {

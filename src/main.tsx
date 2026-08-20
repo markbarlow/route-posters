@@ -16,7 +16,8 @@ if (import.meta.env.DEV) {
     buildSampleProject,
     saveProject,
     // Exposed so the generator reads the real manifest rather than parsing the source file.
-    showcase: [...SPLASH_POSTERS, ...SAMPLE_GALLERY],
+    // Kept in two groups so it can regenerate the gallery without touching supplied artwork.
+    showcase: { splash: SPLASH_POSTERS, gallery: SAMPLE_GALLERY },
   };
 }
 

@@ -8,7 +8,7 @@ export const ROUTES = ['/', '/create', '/samples'] as const;
 export type Route = (typeof ROUTES)[number];
 
 /**
- * The site is served from a sub-path on GitHub Pages ("/strava-posters/"), so every path has to
+ * The site is served from a sub-path on GitHub Pages ("/route-posters/"), so every path has to
  * be translated in both directions. Getting this wrong is the most likely bug in the whole
  * module, which is why both halves are pure and tested.
  */
