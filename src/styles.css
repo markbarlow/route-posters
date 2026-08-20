@@ -818,6 +818,11 @@ textarea:focus {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  /* Absorb the card's spare height. Grid stretches every card in a row to the same height, but
+     without this the body stays as tall as its own content and the slack pools beneath it — which
+     leaves the flex: 1 on .gallery__desc below with nothing to grow into, so captions of different
+     lengths push their buttons to different heights. The two rules only work as a pair. */
+  flex: 1;
 }
 
 .gallery__title {
