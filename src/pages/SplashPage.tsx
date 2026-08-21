@@ -14,7 +14,7 @@ export default function SplashPage() {
       <PosterFan />
 
       <div className="splash__pitch">
-        <h1 className="splash__headline">Your routes, high quality</h1>
+        <h1 className="splash__headline">Your routes in high quality</h1>
         <p className="splash__sub">
           Turn runs, rides, hikes and swims into print-quality poster art. Choose a layout, colours, pick what to
           show, then export a sharp PNG or a true-vector PDF for the print shop.
