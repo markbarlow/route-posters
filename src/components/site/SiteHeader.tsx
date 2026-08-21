@@ -1,10 +1,11 @@
 import { Link, useRoute } from '../../router';
 
 /**
- * Shared site chrome. On the splash page the nav is dropped (`minimal`) so the page stays a
- * single, uncluttered pitch — the call to action is the only route onward that matters there.
+ * Shared site chrome: the brand, and links to the two places worth going. The nav renders on every
+ * page including the splash, so the header is one consistent thing rather than something that
+ * changes shape depending on where you landed.
  */
-export function SiteHeader({ minimal = false }: { minimal?: boolean }) {
+export function SiteHeader() {
   const route = useRoute();
 
   return (
@@ -14,22 +15,20 @@ export function SiteHeader({ minimal = false }: { minimal?: boolean }) {
       </Link>
       <span className="topbar__tag">Print-ready art from your activities</span>
       <span className="topbar__spacer" />
-      {minimal ? null : (
-        <nav className="topbar__nav">
-          <Link
-            to="/create"
-            className={`topbar__link${route === '/create' ? ' topbar__link--current' : ''}`}
-          >
-            Create
-          </Link>
-          <Link
-            to="/samples"
-            className={`topbar__link${route === '/samples' ? ' topbar__link--current' : ''}`}
-          >
-            Samples
-          </Link>
-        </nav>
-      )}
+      <nav className="topbar__nav">
+        <Link
+          to="/create"
+          className={`topbar__link${route === '/create' ? ' topbar__link--current' : ''}`}
+        >
+          Create
+        </Link>
+        <Link
+          to="/samples"
+          className={`topbar__link${route === '/samples' ? ' topbar__link--current' : ''}`}
+        >
+          Samples
+        </Link>
+      </nav>
     </header>
   );
 }

@@ -21,7 +21,7 @@ export default function App() {
 
   return (
     <>
-      <SiteHeader minimal={route === '/'} />
+      <SiteHeader />
       {route === '/samples' ? <SamplesPage /> : <SplashPage />}
     </>
   );
