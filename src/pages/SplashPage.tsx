@@ -28,7 +28,7 @@ export default function SplashPage() {
           Not ready to dig out your files? <Link to="/samples">Browse the samples</Link>.
         </p>
         <p className="note splash__privacy">
-          Nothing is uploaded, no need to create an account. Everything happens in your browser. 
+          Nothing is uploaded, no need to create an account, it all happens in your browser. 
         </p>
       </div>
     </main>

@@ -239,7 +239,7 @@ export default function CreatePage() {
           </Panel>
 
           <Panel title="Metadata">
-            <p className="note">Applies to every map. Use the ⋯ menu on an individual activity to override just that one.</p>
+            <p className="note">Applies to every map. Use the ⋯ menu on an activity to individually customise it.</p>
             <FieldToggles
               value={globalFields}
               onChange={(fields: Field[]) => setProject((p) => setFieldsOnAllSlots(p, fields))}
