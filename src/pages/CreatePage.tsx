@@ -239,7 +239,7 @@ export default function CreatePage() {
           </Panel>
 
           <Panel title="Metadata">
-            <p className="note">Applies to every map. Use ⋯ on an activity to override just that one.</p>
+            <p className="note">Applies to every map. Use the ⋯ menu on an individual activity to override just that one.</p>
             <FieldToggles
               value={globalFields}
               onChange={(fields: Field[]) => setProject((p) => setFieldsOnAllSlots(p, fields))}
@@ -329,8 +329,8 @@ export default function CreatePage() {
 
           <Panel title="Project" defaultOpen={false}>
             <p className="note">
-              Your work is saved in this browser automatically. Save a project file to move it to
-              another machine.
+              Your work is saved in this browser automatically. Save a project file to back it up or move it to
+              another device. The project is saved in json format and can be reloaded here using the Open Project button.
             </p>
             <div className="inline">
               <button

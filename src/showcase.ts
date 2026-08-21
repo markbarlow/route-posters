@@ -100,7 +100,7 @@ export const SAMPLE_GALLERY: ShowcaseItem[] = [
     image: 'sample-single-paper.png',
     title: 'Single · Paper',
     description:
-      "Alpe d'Huez given the whole page, its twenty-one hairpins in dark ink on warm off-white.",
+      "Alpe d'Huez full page treatment, twenty-one hairpins in dark ink on off-white.",
     preset: {
       templateId: 'single',
       themeId: 'paper',
@@ -127,7 +127,7 @@ export const SAMPLE_GALLERY: ShowcaseItem[] = [
     image: 'sample-triptych-sage.png',
     title: 'Triptych · Sage',
     description:
-      'London, Berlin and Barcelona marathons stacked down the page in deep green on a pale wash.',
+      'London, Berlin and Barcelona marathons stacked in deep green on a pale wash.',
     preset: {
       templateId: 'triptych',
       themeId: 'sage',
@@ -141,7 +141,7 @@ export const SAMPLE_GALLERY: ShowcaseItem[] = [
     image: 'sample-feature-blueprint.png',
     title: 'Feature + three · Blueprint',
     description:
-      'The London marathon large above Boston, York and Edinburgh, pale blue on deep blue.',
+      'London marathon above Boston, York and Edinburgh, pale blue on deep blue.',
     preset: {
       templateId: 'feature-three',
       themeId: 'blueprint',
@@ -168,7 +168,7 @@ export const SAMPLE_GALLERY: ShowcaseItem[] = [
     image: 'sample-nine-midnight.png',
     title: 'Nine · Midnight',
     description:
-      'Nine marathon routes in a three-by-three grid, white on near-black — the year-in-runs wall piece.',
+      'Nine marathon routes in a three-by-three grid, white on near-black.',
     preset: {
       templateId: 'nine',
       themeId: 'midnight',

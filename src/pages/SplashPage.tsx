@@ -14,10 +14,10 @@ export default function SplashPage() {
       <PosterFan />
 
       <div className="splash__pitch">
-        <h1 className="splash__headline">Your routes, worth putting on a wall</h1>
+        <h1 className="splash__headline">Your routes, high quality</h1>
         <p className="splash__sub">
-          Turn runs, rides and hikes into print-quality poster art. Choose a layout, pick what to
-          show, and export a sharp PNG or a true-vector PDF for the print shop.
+          Turn runs, rides, hikes and swims into print-quality poster art. Choose a layout, colours, pick what to
+          show, then export a sharp PNG or a true-vector PDF for the print shop.
         </p>
 
         <Link to="/create" className="btn btn--primary btn--large">
@@ -28,7 +28,7 @@ export default function SplashPage() {
           Not ready to dig out your files? <Link to="/samples">Browse the samples</Link>.
         </p>
         <p className="note splash__privacy">
-          Everything happens in your browser. Nothing is uploaded, and there is no account to make.
+          Nothing is uploaded, no need to create an account. Everything happens in your browser. 
         </p>
       </div>
     </main>
